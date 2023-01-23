@@ -11,12 +11,9 @@ import {
 import { useContext, useEffect } from "react";
 
 import ClientStyleContext from "./styles/client.context";
-import { styled, createTheme } from "./styles/stitches";
+import { createTheme } from "./styles/stitches";
+import { ErrorContainer } from "./components/ErrorContainer";
 
-const Container = styled("div", {
-  backgroundColor: "#ff0000",
-  padding: "1em",
-});
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -74,26 +71,28 @@ export default function App() {
   );
 }
 
+// Global catch boundary
 export function CatchBoundary() {
   const caught = useCatch();
 
   return (
     <Document title={`${caught.status} ${caught.statusText}`}>
-      <Container>
+      <ErrorContainer style={{ fontFamily: "graphik" }}>
         <p>
           [CatchBoundary]: {caught.status} {caught.statusText}
         </p>
-      </Container>
+      </ErrorContainer>
     </Document>
   );
 }
 
+// Global error boundary
 export function ErrorBoundary({ error }: { error: Error }) {
   return (
     <Document title="Error!">
-      <Container>
+      <ErrorContainer style={{ fontFamily: "graphik" }}>
         <p>[ErrorBoundary]: There was an error: {error.message}</p>
-      </Container>
+      </ErrorContainer>
     </Document>
   );
 }

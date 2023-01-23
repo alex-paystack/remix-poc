@@ -2,7 +2,7 @@ import { useState } from "react";
 import { styled, Text } from "@paystackhq/pax";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { Form } from "@remix-run/react";
+import { Form, useNavigation } from "@remix-run/react";
 
 const Footer = styled("div", {
   fontFamily: "graphik",
@@ -20,8 +20,25 @@ const Button = styled("button", {
   cursor: "pointer",
 });
 
-export default function AddBank() {
+const Error = styled("div", {
+  fontFamily: "graphik",
+  color: "#D44141",
+  fontSize: "12px",
+});
+
+type AddBankProps = {
+  errors?: {
+    name: string | null;
+    id: string | null;
+    slug: string | null;
+  };
+};
+
+export default function AddBank({ errors }: AddBankProps) {
   const [open, setOpen] = useState(false);
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -41,20 +58,29 @@ export default function AddBank() {
           </Dialog.Description>
           <Form method="post">
             <fieldset className="Fieldset">
+              <Label className="Label" htmlFor="id">
+                Bank ID
+              </Label>
+              <input className="Input" id="id" name="id" />
+              {errors?.id && <Error>{errors.id}</Error>}
+            </fieldset>
+            <fieldset className="Fieldset">
               <Label className="Label" htmlFor="name">
                 Bank Name
               </Label>
               <input className="Input" id="name" name="name" />
+              {errors?.name && <Error>{errors.name}</Error>}
             </fieldset>
             <fieldset className="Fieldset">
               <Label className="Label" htmlFor="slug">
                 Bank Slug
               </Label>
               <input className="Input" id="slug" name="slug" />
+              {errors?.slug && <Error>{errors.slug}</Error>}
             </fieldset>
             <Footer>
               <Button className="Button green" type="submit">
-                Save changes
+                {isSubmitting ? "Saving..." : "Save changes"}
               </Button>
             </Footer>
           </Form>
@@ -68,14 +94,3 @@ export default function AddBank() {
     </Dialog.Root>
   );
 }
-
-// export default function Todos() {
-//   return (
-//     <div>
-//       <Form method="post">
-//         <input type="text" name="title" />
-//         <button type="submit">Create Todo</button>
-//       </Form>
-//     </div>
-//   );
-// }
